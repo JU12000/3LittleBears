@@ -1,0 +1,21 @@
+/* Write your global styles here, in PostCSS syntax */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+div#svelte {
+	@apply bg-slate-700;
+	height: 100vh;
+}
+
+h1, h2, p {
+	@apply font-mono text-blue-50;
+}
+
+button:not(.toast-close) {
+	@apply bg-blue-300 bg-opacity-30 border-2 border-blue-200 py-1 px-3 rounded-md text-blue-50;
+}
+
+footer {
+	width: 100vw;
+}

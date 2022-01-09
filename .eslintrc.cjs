@@ -1,4 +1,4 @@
-export default {
+module.exports = {
 	root: true,
 	extends: ['eslint:recommended', 'prettier'],
 	plugins: ['svelte3'],
@@ -13,8 +13,8 @@ export default {
 		node: true
 	},
 	rules: {
+		semi: ['error', 'always'],
 		'comma-dangle': ['error', 'never'],
-		indent: ['error', 'tab'],
-		semi: ['error', 'always']
+		indent: ['error', 'tab']
 	}
 };

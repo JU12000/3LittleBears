@@ -1,16 +1,14 @@
 <script>
 	import { tweened } from 'svelte/motion';
 	import { linear } from 'svelte/easing';
-	import { toast } from '../stores';
+	import { toast } from '@/stores/';
 
 	export var item;
 
-	const progress = tweened(1, { duration: 5000, easing: linear });
+	const progress = tweened(1, { duration: 500000, easing: linear });
 
 	function close() {
-		if ($progress === 0) {
-			toast.update((x) => x.filter((y) => y.id !== item.id));
-		}
+		toast.update((x) => x.filter((y) => y.id !== item.id));
 	}
 
 	var paused = false;
@@ -32,23 +30,13 @@
 	}
 </script>
 
-<div class="toast-item" on:mouseenter={pause} on:mouseleave={resume}>
-	{item.message}
-	<progress class="toast-progress" value={$progress} />
+<div
+	on:mouseenter={pause}
+	on:mouseleave={resume}
+	class="bg-rose-800 flex justify-between m-3 rounded-md"
+>
+	<p class="p-2">
+		{item.message}
+	</p>
+	<button on:click={close} class="pb-2 pr-2 pt-0.5 self-start text-xs toast-close">x</button>
 </div>
-
-<style>
-	.toast-item {
-		background: red;
-		border-radius: 0.125rem;
-		display: flex;
-		flex-direction: column;
-		margin: 0 0 0.5rem 0;
-		overflow: hidden;
-	}
-
-	.toast-progress {
-		display: block;
-		background: transparent;
-	}
-</style>

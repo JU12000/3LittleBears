@@ -1,12 +1,11 @@
-module.exports = {
-	content: [],
-	mode: 'jit',
-	plugins: [],
-	purge: [
-		'src/app.html',
-		'src/**/*.svelte'
-	],
+const config = {
+	content: ['./src/**/*.{html,js,svelte,ts}'],
+
 	theme: {
 		extend: {}
-	}
+	},
+
+	plugins: []
 };
+
+module.exports = config;
