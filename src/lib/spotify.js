@@ -106,7 +106,7 @@ function refreshAccessToken() {
 		})
 		.then((data) => handleAccessToken(data))
 		.catch((error) => {
-			toast.push(error.message);
+			get(toast).push(error.message);
 		});
 }
 
@@ -159,6 +159,15 @@ function getCurrentTrack() {
 				song: data ? data.item.name : '',
 				genres: data ? await getArtistGenres(data.item.artists[0].id) : []
 			});
+
+			// Run this request again in 15 seconds or when the song ends, whichever
+			// comes first
+			const timeout = Math.min(
+				data ? (data.item.duration_ms - data.progress_ms) : 30000,
+				15000
+			);
+
+			setTimeout(getCurrentTrack, timeout);
 		});
 }
 
