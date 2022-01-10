@@ -3,13 +3,35 @@
 @tailwind components;
 @tailwind utilities;
 
+.spotify-logo {
+	height: 21px;
+	width: auto;
+}
+
+.spotify-logo > img {
+	max-height: 100%;
+	max-width: 100%;
+}
+
+.text-spotify {
+	color: #1DB954;
+}
+
+.text-spotify-dark {
+	color: #191414;
+}
+
 div#svelte {
 	@apply bg-slate-700;
 	height: 100vh;
 }
 
-h1, h2, p {
+h1, h2, p, a {
 	@apply font-mono text-blue-50;
+}
+
+button {
+	@apply font-mono;
 }
 
 button:not(.toast-close) {

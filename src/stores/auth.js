@@ -3,7 +3,7 @@ import { browser } from "$app/env";
 
 const cookieExpirationString = ' ; expires=Thu, 01 Jan 1970 00:00:00 GMT';
 
-const accessToken = writable(
+export const accessToken = writable(
 	browser
 	&& document.cookie.split('; ').find(x => /accessToken=.*/g.test(x))
 	&& document.cookie.split('; ').find(x => /accessToken=.*/g.test(x)).substring(12));
@@ -17,7 +17,7 @@ accessToken.subscribe(value => {
 	}
 });
 
-const refreshToken = writable(
+export const refreshToken = writable(
 	browser
 	&& document.cookie.split('; ').find(x => /refreshToken=.*/g.test(x))
 	&& document.cookie.split('; ').find(x => /refreshToken=.*/g.test(x)).substring(13));
@@ -32,7 +32,7 @@ refreshToken.subscribe(value => {
 });
 
 //TODO: Check if svelte sends X-site-cookies, if not switch this to use a cookie instead of localstorage
-const state = writable(browser && localStorage.getItem('state'));
+export const state = writable(browser && localStorage.getItem('state'));
 state.subscribe(value => {
 	if (browser) {
 		localStorage.setItem('state', value != null ? value : '');
@@ -40,16 +40,9 @@ state.subscribe(value => {
 });
 
 //TODO: Check if svelte sends X-site-cookies, if not switch this to use a cookie instead of localstorage
-const verifier = writable(browser && localStorage.getItem('verifier'));
+export const verifier = writable(browser && localStorage.getItem('verifier'));
 verifier.subscribe(value => {
 	if (browser) {
 		localStorage.setItem('verifier', value != null ? value : '');
 	}
 });
-
-export default {
-	accessToken,
-	state,
-	refreshToken,
-	verifier
-};

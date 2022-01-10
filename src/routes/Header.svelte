@@ -1,10 +1,10 @@
 <script>
-	import { auth } from '@/stores/';
+	import { accessToken } from '@/stores/auth';
 	import { onMount } from 'svelte';
 	import Spotify from '$lib/spotify';
 
 	onMount(() => {
-		//spotify.healthCheck();
+		Spotify.healthCheck();
 	});
 
 	async function connect() {
@@ -17,15 +17,15 @@
 </script>
 
 <header class="bg-slate-700 flex h-16 items-center">
-	<!--TODO: Icon here-->
+	<!--TODO: Icon here, remove temp icon-->
 	<p class="pl-3">(^^)</p>
 	<h1 class="font-bold pl-1 text-2xl">3LittleBears</h1>
 
 	<span class="flex-grow" />
 
 	<div class="pr-6">
-		{#if !auth.$accessToken}
-			<button on:click={connect}>Connect With Spotify</button>
+		{#if !$accessToken}
+			<button on:click={connect}>Connect With <span class="text-spotify">Spotify</span></button>
 		{:else}
 			<button on:click={logout}> Log Out </button>
 		{/if}

@@ -1,7 +1,9 @@
 import { generateState } from '$lib/state';
 import { get } from 'svelte/store';
 import { page } from '$app/stores';
-import { auth, toast } from '@/stores';
+import { accessToken, refreshToken, state, verifier } from '@/stores/auth';
+import { current } from '@/stores/user';
+import toast from '@/stores/toast';
 import getPkce from 'oauth-pkce';
 
 const authBase = 'https://accounts.spotify.com';
@@ -18,7 +20,7 @@ async function getAuthorization() {
 		});
 	});
 
-	auth.verifier.set(pkce.verifier);
+	verifier.set(pkce.verifier);
 
 	const authURL = new URL(
 		`${authBase}/authorize?` +
@@ -33,7 +35,7 @@ async function getAuthorization() {
 		})
 	);
 
-	auth.state.set(authURL.searchParams.get('state'));
+	state.set(authURL.searchParams.get('state'));
 
 	return authURL;
 }
@@ -41,7 +43,7 @@ async function getAuthorization() {
 function getAccessToken(authCode) {
 	const responseState = get(page).url.searchParams.get('state');
 
-	const localState = get(auth.state);
+	const localState = get(state);
 
 	if (responseState != null && responseState === localState) {
 		const accessURL = new URL(`${authBase}/api/token`);
@@ -51,7 +53,7 @@ function getAccessToken(authCode) {
 			code: authCode,
 			redirect_uri: import.meta.env.VITE_REDIRECT_URL,
 			client_id: import.meta.env.VITE_CLIENT_ID,
-			code_verifier: get(auth.verifier)
+			code_verifier: get(verifier)
 		});
 
 		fetch(accessURL, {
@@ -79,7 +81,7 @@ function refreshAccessToken() {
 
 	const refreshBody = new URLSearchParams({
 		grant_type: 'refresh_token',
-		refresh_token: get(auth.refreshToken),
+		refresh_token: get(refreshToken),
 		client_id: import.meta.env.VITE_CLIENT_ID
 	});
 
@@ -97,8 +99,7 @@ function refreshAccessToken() {
 			}
 
 			if (response.status === 400) {
-				auth.accessToken.set(null);
-				auth.refreshToken.set(null);
+				logout();
 
 				throw new Error('Please log in again.');
 			}
@@ -110,7 +111,7 @@ function refreshAccessToken() {
 }
 
 function healthCheck() {
-	var localAccessToken = get(auth.accessToken);
+	var localAccessToken = get(accessToken);
 
 	if (localAccessToken) {
 		refreshAccessToken();
@@ -118,15 +119,21 @@ function healthCheck() {
 }
 
 function handleAccessToken(data) {
-	auth.accessToken.set(data['access_token']);
-	auth.refreshToken.set(data['refresh_token']);
+	accessToken.set(data['access_token']);
+	refreshToken.set(data['refresh_token']);
 
 	setTimeout(refreshAccessToken, data['expires_in'] * 1000);
 }
 
 function logout() {
-	auth.accessToken.set(null);
-	auth.refreshToken.set(null);
+	accessToken.set(null);
+	refreshToken.set(null);
+
+	current.set({
+		artist: '',
+		song: '',
+		genres: []
+	});
 }
 
 function getCurrentTrack() {
@@ -135,18 +142,22 @@ function getCurrentTrack() {
 	fetch(requestURL, {
 		method: 'GET',
 		headers: new Headers({
-			Authorization: `Bearer ${get(auth.accessToken)}`,
+			Authorization: `Bearer ${get(accessToken)}`,
 			'Content-Type': 'application/json'
 		})
 	})
 		.then((response) => {
+			if(response.status == 204) {
+				return undefined;
+			}
+
 			return response.json();
 		})
 		.then(async (data) => {
 			current.set({
-				artist: data.item.artists[0].name,
-				song: data.item.name,
-				genres: await getArtistGenres(data.item.artists[0].id)
+				artist: data ? data.item.artists[0].name : '',
+				song: data ? data.item.name : '',
+				genres: data ? await getArtistGenres(data.item.artists[0].id) : []
 			});
 		});
 }
@@ -157,7 +168,7 @@ function getArtistGenres(id) {
 	return fetch(requestURL, {
 		method: 'GET',
 		headers: new Headers({
-			Authorization: `Bearer ${get(auth.accessToken)}`,
+			Authorization: `Bearer ${get(accessToken)}`,
 			'Content-Type': 'application/json'
 		})
 	})

@@ -1,13 +1,9 @@
 <script>
-	import { accessToken, toast, toastCount } from '@/stores';
+	import { accessToken } from '@/stores/auth';
 	import { page } from '$app/stores';
 	import Content from './Content.svelte';
+	import SalesPitch from './SalesPitch.svelte';
 	import Spotify from '$lib/spotify';
-
-	function addToast() {
-		toast.update((x) => [...x, { message: 'toast', id: $toastCount }]);
-		$toastCount += 1;
-	}
 
 	$: Spotify.getAccessToken($page.url.searchParams.get('code'));
 
@@ -16,10 +12,8 @@
 	}
 </script>
 
-{#if !$accessToken}
+{#if $accessToken}
 	<Content />
+{:else}
+	<SalesPitch />
 {/if}
-
-<div>
-	<button on:click={addToast}>Add Toast</button>
-</div>

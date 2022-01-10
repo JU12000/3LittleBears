@@ -1,14 +1,14 @@
 <script>
 	import { tweened } from 'svelte/motion';
 	import { linear } from 'svelte/easing';
-	import { toast } from '@/stores/';
+	import toast from '@/stores/toast';
 
 	export var item;
 
 	const progress = tweened(1, { duration: 500000, easing: linear });
 
 	function close() {
-		toast.update((x) => x.filter((y) => y.id !== item.id));
+		$toast.pop(item.id);
 	}
 
 	var paused = false;
