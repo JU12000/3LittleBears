@@ -5,10 +5,12 @@
 	import Toast from './Toast.svelte';
 </script>
 
-<Header />
+<div class="flex flex-col min-h-screen">
+	<Header />
 
-<slot />
+	<slot />
 
-<Footer />
+	<Footer />
+</div>
 
 <Toast />

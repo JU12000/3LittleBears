@@ -12,8 +12,10 @@
 	}
 </script>
 
-{#if $accessToken}
-	<Content />
-{:else}
-	<SalesPitch />
-{/if}
+<div class="flex flex-grow">
+	{#if $accessToken}
+		<Content />
+	{:else}
+		<SalesPitch />
+	{/if}
+</div>

@@ -1,9 +1,7 @@
 <footer
 	class="
  		flex
-		absolute
-	bg-slate-800
-		bottom-0
+		bg-slate-800
 		h-12
 		items-center
 		justify-between

@@ -19,7 +19,7 @@
 <header class="bg-slate-700 flex h-16 items-center">
 	<!--TODO: Icon here, remove temp icon-->
 	<p class="pl-3">(^^)</p>
-	<h1 class="font-bold pl-1 text-2xl">3LittleBears</h1>
+	<h1 class="font-bold pl-1 sm:text-2xl">3LittleBears</h1>
 
 	<span class="flex-grow" />
 

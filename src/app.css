@@ -23,7 +23,6 @@
 
 div#svelte {
 	@apply bg-slate-700;
-	height: 100vh;
 }
 
 h1, h2, p, a {
@@ -35,7 +34,7 @@ button {
 }
 
 button:not(.toast-close) {
-	@apply bg-blue-300 bg-opacity-30 border-2 border-blue-200 py-1 px-3 rounded-md text-blue-50;
+	@apply bg-blue-300 bg-opacity-30 border-2 border-blue-200 py-1 px-3 rounded-md sm:text-base text-xs text-blue-50;
 }
 
 footer {

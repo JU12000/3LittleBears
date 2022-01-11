@@ -72,8 +72,6 @@ function getAccessToken(authCode) {
 				console.log(error);
 			});
 	}
-
-	//TODO: Handle cases where the responseState is bad
 }
 
 function refreshAccessToken() {
@@ -136,7 +134,9 @@ function logout() {
 	});
 }
 
-function getCurrentTrack() {
+let getCurrentTrackTimeoutId;
+
+function getCurrentTrack(resetTimeout = true) {
 	const requestURL = new URL(`${base}/me/player/currently-playing`);
 
 	fetch(requestURL, {
@@ -160,6 +160,10 @@ function getCurrentTrack() {
 				genres: data ? await getArtistGenres(data.item.artists[0].id) : []
 			});
 
+			if (resetTimeout) {
+				clearTimeout(getCurrentTrackTimeoutId);
+			}
+
 			// Run this request again in 15 seconds or when the song ends, whichever
 			// comes first
 			const timeout = Math.min(
@@ -167,7 +171,9 @@ function getCurrentTrack() {
 				15000
 			);
 
-			setTimeout(getCurrentTrack, timeout);
+			console.log(timeout);
+
+			getCurrentTrackTimeoutId = setTimeout(getCurrentTrack.bind(false), timeout);
 		});
 }
 
