@@ -11,6 +11,6 @@
 		own digging.
 	</p>
 	<p class="pt-4 text-xl text-center">
-		Hit the "Connect With <splan class="text-spotify">Spotify</splan>" button above to begin :^)
+		Hit the "Connect With <span class="text-spotify">Spotify</span>" button above to begin :^)
 	</p>
 </div>

@@ -3,7 +3,7 @@
 	import { linear } from 'svelte/easing';
 	import toast from '@/stores/toast';
 
-	export var item;
+	export let item;
 
 	const progress = tweened(1, { duration: 500000, easing: linear });
 
@@ -11,7 +11,7 @@
 		$toast.pop(item.id);
 	}
 
-	var paused = false;
+	let paused = false;
 
 	$: progress.set(0).then(close);
 

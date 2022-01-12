@@ -1,8 +1,8 @@
 export function generateState(length) {
-	var stateString = '';
-	var possible = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+	let stateString = '';
+	const possible = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
 
-	for (var i = 0; i < length; i++) {
+	for (let i = 0; i < length; i++) {
 		stateString += possible.charAt(Math.floor(Math.random() * possible.length));
 	}
 

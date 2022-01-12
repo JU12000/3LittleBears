@@ -1,10 +1,12 @@
+import { accessToken, refreshToken, state, verifier } from '@/stores/auth';
+import { current } from '@/stores/user';
+import { displayName } from '@/stores/user';
 import { generateState } from '$lib/state';
 import { get } from 'svelte/store';
 import { page } from '$app/stores';
-import { accessToken, refreshToken, state, verifier } from '@/stores/auth';
-import { current } from '@/stores/user';
-import toast from '@/stores/toast';
+import { playlists } from '@/stores/user';
 import getPkce from 'oauth-pkce';
+import toast from '@/stores/toast';
 
 const authBase = 'https://accounts.spotify.com';
 const base = 'https://api.spotify.com/v1';
@@ -109,7 +111,7 @@ function refreshAccessToken() {
 }
 
 function healthCheck() {
-	var localAccessToken = get(accessToken);
+	const localAccessToken = get(accessToken);
 
 	if (localAccessToken) {
 		refreshAccessToken();
@@ -136,6 +138,24 @@ function logout() {
 
 let getCurrentTrackTimeoutId;
 
+function getCurrentUser() {
+	const requestURL = new URL(`${base}/me`);
+
+	fetch(requestURL, {
+		method: 'GET',
+		headers: new Headers({
+			Authorization: `Bearer ${get(accessToken)}`,
+			'Content-Type': 'application/json'
+		})
+	})
+		.then((response) => {
+			return response.json();
+		})
+		.then((data) => {
+			displayName.set(data['display_name']);
+		});
+}
+
 function getCurrentTrack(resetTimeout = true) {
 	const requestURL = new URL(`${base}/me/player/currently-playing`);
 
@@ -154,11 +174,13 @@ function getCurrentTrack(resetTimeout = true) {
 			return response.json();
 		})
 		.then(async (data) => {
-			current.set({
-				artist: data ? data.item.artists[0].name : '',
-				song: data ? data.item.name : '',
-				genres: data ? await getArtistGenres(data.item.artists[0].id) : []
-			});
+			if (!data || data.item.artists[0].name != get(current).artist || data.item.name != get(current).song) {
+				current.set({
+					artist: data ? data.item.artists[0].name : '',
+					song: data ? data.item.name : '',
+					genres: data ? await getArtistGenres(data.item.artists[0].id) : []
+				});
+			}
 
 			if (resetTimeout) {
 				clearTimeout(getCurrentTrackTimeoutId);
@@ -170,8 +192,6 @@ function getCurrentTrack(resetTimeout = true) {
 				data ? (data.item.duration_ms - data.progress_ms) : 30000,
 				15000
 			);
-
-			console.log(timeout);
 
 			getCurrentTrackTimeoutId = setTimeout(getCurrentTrack.bind(false), timeout);
 		});
@@ -195,10 +215,41 @@ function getArtistGenres(id) {
 		});
 }
 
+function getUserPlaylists() {
+	const requestURL = new URL(`${base}/me/playlists`);
+
+	return fetch(requestURL, {
+		method: 'GET',
+		headers: new Headers({
+			Authorization: `Bearer ${get(accessToken)}`,
+			'Content-Type': 'application/json'
+		})
+	})
+		.then((response) => {
+			return response.json();
+		})
+		.then((data) => {
+			playlists.set(
+				data.items.filter(x => x.owner['display_name'] == get(displayName))
+					.map(x => {
+						return {
+							id: x.id,
+							name: x.name,
+							description: x.description,
+							image: x.images[0],
+							tracks: x.tracks
+						};
+					})
+			);
+		});
+}
+
 export default {
 	getAccessToken,
 	getAuthorization,
 	getCurrentTrack,
+	getCurrentUser,
+	getUserPlaylists,
 	healthCheck,
 	logout
 };
