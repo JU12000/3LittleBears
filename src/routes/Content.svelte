@@ -3,21 +3,26 @@
 	import { displayName } from '@/stores/user';
 	import CurrentlyPlaying from './CurrentlyPlaying.svelte';
 	import Playlists from './Playlist/Playlists.svelte';
+	import Recommendations from '$lib/recommendations';
 	import Spotify from '$lib/spotify';
 
 	function refreshCurrentlyPlaying() {
 		Spotify.getCurrentTrack();
 	}
 
-	function refreshPlaylists() {
-		//TODO: playlist refresh should trigger a sort.
-		Spotify.getUserPlaylists();
+	async function refreshPlaylists() {
+		await Spotify.getUserPlaylists();
+		Recommendations.sortPlaylists();
+	}
+
+	async function getContent() {
+		await Spotify.getCurrentUser();
+		await refreshCurrentlyPlaying();
+		refreshPlaylists();
 	}
 
 	$: if ($accessToken) {
-		Spotify.getCurrentUser();
-		Spotify.getCurrentTrack();
-		Spotify.getUserPlaylists();
+		getContent();
 	}
 </script>
 

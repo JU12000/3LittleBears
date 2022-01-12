@@ -167,14 +167,18 @@ function getCurrentTrack(resetTimeout = true) {
 		})
 	})
 		.then((response) => {
-			if(response.status == 204) {
+			if(response.status === 204) {
 				return undefined;
 			}
 
 			return response.json();
 		})
 		.then(async (data) => {
-			if (!data || data.item.artists[0].name != get(current).artist || data.item.name != get(current).song) {
+			if (
+				!data
+				|| data.item.artists[0].name != get(current).artist
+				|| data.item.name != get(current).song
+			) {
 				current.set({
 					artist: data ? data.item.artists[0].name : '',
 					song: data ? data.item.name : '',
@@ -215,6 +219,9 @@ function getArtistGenres(id) {
 		});
 }
 
+const genreNotationRegex = /3LittleBears{.*}/g;
+const ignoreNotationRegex = /3LittleBearsIgnore/;
+
 function getUserPlaylists() {
 	const requestURL = new URL(`${base}/me/playlists`);
 
@@ -230,14 +237,30 @@ function getUserPlaylists() {
 		})
 		.then((data) => {
 			playlists.set(
-				data.items.filter(x => x.owner['display_name'] == get(displayName))
+				data.items
+					.filter(x => x.owner['display_name'] === get(displayName)
+						&& !ignoreNotationRegex.test(x.description)
+					)
 					.map(x => {
+						const notated = genreNotationRegex.test(x.description);
+
+						let genres;
+						if (notated) {
+							const genreNotationString = x.description.match(genreNotationRegex)[0];
+							genres = genreNotationString.substring(13, genreNotationString.length - 1)
+								.split(', ');
+						} else {
+							genres = [];
+						}
+
 						return {
 							id: x.id,
-							name: x.name,
 							description: x.description,
+							genres: genres,
 							image: x.images[0],
-							tracks: x.tracks
+							name: x.name,
+							notated: notated,
+							tracks: x.tracks.total
 						};
 					})
 			);

@@ -13,7 +13,7 @@
 				{#each $current.genres as genre, index}
 					<a
 						href="https://everynoise.com/research.cgi?mode=genre&name={genre.replace(' ', '+')}"
-						class="px-2 text-sm {index % 2 == 0 ? 'text-slate-900' : ''}"
+						class="px-2 text-sm {index % 2 === 0 ? 'text-slate-900' : ''}"
 						rel="noopener norefferer"
 						target="_blank"
 					>

@@ -10,7 +10,11 @@
 	/>
 	<div class="flex flex-col flex-grow justify-between pb-2">
 		<p>{playlist.name}</p>
-		<p>Tracks: {playlist.tracks.total}</p>
+		<p>Tracks: {playlist.tracks}</p>
+		{#if playlist.notated}
+			<p class="text-emerald-500">Genre Notation Match</p>
+		{/if}
+		<p>Match: {Math.floor(playlist.matchPercent | 0)}%</p>
 		<button class="self-center w-fit">Add to Playlist</button>
 	</div>
 </div>

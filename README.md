@@ -1,38 +1,76 @@
-# create-svelte
+# (^^) 3LittleBears
 
-Everything you need to build a Svelte project, powered by [`create-svelte`](https://github.com/sveltejs/kit/tree/master/packages/create-svelte);
+## About
 
-## Creating a project
+3LittleBears is a free to use, open source project which can be found on the web
+at [3LittleBears.dev](https://3LittleBears.dev). It connects to your Spotify
+and recommends which playlist you should add your currently playing track to
+based on the micro-genres Spotify returns with each track. In the future it may
+also be able to make recommendations based on Spotify stats like dancability!
 
-If you're seeing this, you've probably already done this step. Congrats!
+## How?
 
-```bash
-# create a new project in the current directory
-npm init svelte@next
+You can dig through the code if that's what you're asking. If you just want to
+know how to use it here's the answer:
 
-# create a new project in my-app
-npm init svelte@next my-app
-```
+### Watch Currently Playing
 
-> Note: the `@next` is temporary
+It will show whatever your Spotify account is currently playing, there's a
+manual refresh button but it also refreshes automatically with some frequency.
+You'll notice some weird genres in curly braces (`{ }` <- these ones). These
+genres come from Spotify, so we can use them to build really specific playlists.
+Not ever song has had genres assigned, so sometimes we can't make a recommendation
+though it is really cool to find one with no genres! If you click on one of the
+genres it will take you to the research page for that genre at the incredible
+site [Every Noise](https://everynoise.com) so you can find more bands that Spotify
+tagged with that genre.
 
-## Developing
+### See Which Playlist The Bears Recommend
 
-Once you've created a project and installed dependencies with `npm install` (or `pnpm install` or `yarn`), start a development server:
+Under your Currently Playing section you'll see a list of Your Playlists. You
+should recognize them because they'll all be yours. We filter out anything you
+don't own (as in, weren't the original creator of). We also filter out anything
+using the `IgnoreNotation`, but more on that later. You can see a match percentage
+under each playlist. They're sorted by that match percentage, so the top left
+playlist will always be the most recommended one. There's also an "Add to Playlist"
+button which you can use, it won't show on any playlist that the song is already
+a part of because accidentally creating duplicate songs on playlists feels really
+bad.
 
-```bash
-npm run dev
+## I Heard You Say Something About Notation?
 
-# or start the server and open the app in a new browser tab
-npm run dev -- --open
-```
+Yes, to quote a young Anakin: "This is where the fun begins".
 
-## Building
+### Genre Notation
 
-Before creating a production version of your app, install an [adapter](https://kit.svelte.dev/docs#adapters) for your target environment. Then:
+Let's say you're an aspiring young playlist creator, you like the organic
+recommendations, but you've already got a playlist for all your
+[German Dark Minimal Techno](https://everynoise.com/research.cgi?mode=genre&name=german+dark+minimal+techno). You want that to show up before anything else no matter how
+badly we recommend you don't add a song to it because you know better
+what you want than we do. I know how you feel, so you can add `3LittleBears{}`
+to any of your Spotify playlist descriptions and include any sub-genres you want
+and we'll treat any match to those playlists as better than a match to one without.
 
-```bash
-npm run build
-```
+For example: ```This is my cool playlist description. 3LittleBears{math rock,
+instrumental math rock}```
 
-> You can preview the built app with `npm run preview`, regardless of whether you installed an adapter. This should _not_ be used to serve your app in production.
+Will always cause that playlist to get sorted first for any song that has one or
+more of those two genres. If a song meets the genre critieria of two playlists
+that both have genre annotations, whichever playlist has more annotated genres
+in common with the song will have a higher recommendation %. Happy Notating!
+
+### Ignore Notation
+
+3LittleBears is a very specific kind of tool, it's not going to be useful to build
+every type of playlist. In fact, it's only useful to build genre hyper-specific
+playlists. If you have a playlist that gets build by different criteria - say,
+only songs made between March and August of any given year, I don't know your life -
+then you're going to want to remove it from the recommendation system. putting
+`3LittleBearsIgnore` anywhere in the description of a playlist will stop it from
+being loaded on the site, and we promise to never talk about it behind it's back.
+
+#### There You Go
+
+That's about it, bugs can be reported here, as can feature requests. Constructive
+criticism is always welcome, everything else can be screamed into a jar and placed
+on a shelf. I hope you enjoy using this as much as I do!
