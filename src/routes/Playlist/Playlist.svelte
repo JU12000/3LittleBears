@@ -11,7 +11,7 @@
 	<div class="flex flex-col flex-grow justify-between pb-2">
 		<p>{playlist.name}</p>
 		<p>Tracks: {playlist.tracks}</p>
-		{#if playlist.notated}
+		{#if playlist.notated && playlist.matchPercent > 0}
 			<p class="text-emerald-500">Genre Notation Match</p>
 		{/if}
 		<p>Match: {Math.floor(playlist.matchPercent | 0)}%</p>

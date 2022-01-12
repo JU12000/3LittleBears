@@ -1,7 +1,7 @@
 <script>
 	import { accessToken } from '@/stores/auth';
 	import { onMount } from 'svelte';
-	import Spotify from '$lib/spotify';
+	import Spotify from '$lib/Spotify/api';
 
 	onMount(() => {
 		Spotify.healthCheck();

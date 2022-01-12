@@ -3,7 +3,7 @@
 	import { page } from '$app/stores';
 	import Content from './Content.svelte';
 	import SalesPitch from './SalesPitch.svelte';
-	import Spotify from '$lib/spotify';
+	import Spotify from '$lib/Spotify/api';
 
 	$: Spotify.getAccessToken($page.url.searchParams.get('code'));
 

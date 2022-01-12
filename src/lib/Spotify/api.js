@@ -1,46 +1,13 @@
 import { accessToken, refreshToken, state, verifier } from '@/stores/auth';
 import { current } from '@/stores/user';
 import { displayName } from '@/stores/user';
-import { generateState } from '$lib/state';
 import { get } from 'svelte/store';
 import { page } from '$app/stores';
 import { playlists } from '@/stores/user';
-import getPkce from 'oauth-pkce';
 import toast from '@/stores/toast';
 
 const authBase = 'https://accounts.spotify.com';
 const base = 'https://api.spotify.com/v1';
-
-async function getAuthorization() {
-	const pkce = await new Promise((resolve) => {
-		getPkce(50, (error, { verifier, challenge }) => {
-			if (error) {
-				toast.push('Something went wrong, try refreshing the page.');
-			}
-
-			resolve({ verifier, challenge });
-		});
-	});
-
-	verifier.set(pkce.verifier);
-
-	const authURL = new URL(
-		`${authBase}/authorize?` +
-		new URLSearchParams({
-			client_id: import.meta.env.VITE_CLIENT_ID,
-			response_type: 'code',
-			redirect_uri: import.meta.env.VITE_REDIRECT_URL,
-			state: generateState(20),
-			scope: import.meta.env.VITE_APPLICATION_SCOPES,
-			code_challenge_method: 'S256',
-			code_challenge: pkce.challenge
-		})
-	);
-
-	state.set(authURL.searchParams.get('state'));
-
-	return authURL;
-}
 
 function getAccessToken(authCode) {
 	const responseState = get(page).url.searchParams.get('state');

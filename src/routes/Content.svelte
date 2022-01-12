@@ -4,7 +4,7 @@
 	import CurrentlyPlaying from './CurrentlyPlaying.svelte';
 	import Playlists from './Playlist/Playlists.svelte';
 	import Recommendations from '$lib/recommendations';
-	import Spotify from '$lib/spotify';
+	import Spotify from '$lib/Spotify/api';
 
 	function refreshCurrentlyPlaying() {
 		Spotify.getCurrentTrack();
