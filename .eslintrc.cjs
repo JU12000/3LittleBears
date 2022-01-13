@@ -1,7 +1,7 @@
 module.exports = {
 	root: true,
 	extends: ['eslint:recommended', 'prettier'],
-	plugins: ['prettier', 'svelte3'],
+	plugins: ['svelte3'],
 	overrides: [{ files: ['*.svelte'], processor: 'svelte3/svelte3' }],
 	parserOptions: {
 		sourceType: 'module',
@@ -11,8 +11,5 @@ module.exports = {
 		browser: true,
 		es2017: true,
 		node: true
-	},
-	rules: {
-		'prettier/prettier': 'error'
 	}
 };

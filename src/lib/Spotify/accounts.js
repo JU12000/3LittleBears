@@ -15,7 +15,9 @@ function generateState(length) {
 		'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
 
 	for (let i = 0; i < length; i++) {
-		stateString += possible.charAt(Math.floor(Math.random() * possible.length));
+		stateString += possible.charAt(
+			Math.floor(Math.random() * possible.length)
+		);
 	}
 
 	return stateString;
@@ -36,15 +38,15 @@ async function getAuthorizationURL() {
 
 	const authURL = new URL(
 		`${base}/authorize?` +
-		new URLSearchParams({
-			client_id: import.meta.env.VITE_CLIENT_ID,
-			response_type: 'code',
-			redirect_uri: import.meta.env.VITE_REDIRECT_URL,
-			state: generateState(20),
-			scope: import.meta.env.VITE_APPLICATION_SCOPES,
-			code_challenge_method: 'S256',
-			code_challenge: pkce.challenge
-		})
+			new URLSearchParams({
+				client_id: import.meta.env.VITE_CLIENT_ID,
+				response_type: 'code',
+				redirect_uri: import.meta.env.VITE_REDIRECT_URL,
+				state: generateState(20),
+				scope: import.meta.env.VITE_APPLICATION_SCOPES,
+				code_challenge_method: 'S256',
+				code_challenge: pkce.challenge
+			})
 	);
 
 	state.set(authURL.searchParams.get('state'));

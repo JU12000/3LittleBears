@@ -1,22 +1,22 @@
 import { get } from 'svelte/store';
-import Spotify from '$lib/Spotify/api';
 import User from '@/stores/user';
 
 function sortPlaylists() {
 	get(User).playlists.sort((playlist1, playlist2) => {
-
 		// Compute which of the two playlists contains more genres in common with
 		// the current song
 		playlist1.matchPercent =
 			(playlist1.genres.filter((x) =>
-				get(User).current.genres.includes(x.toLowerCase())).length /
-				get(User).current.genres.length
-			) * 100;
+				get(User).current.genres.includes(x.toLowerCase())
+			).length /
+				get(User).current.genres.length) *
+			100;
 		playlist2.matchPercent =
 			(playlist2.genres.filter((x) =>
-				get(User).current.genres.includes(x.toLowerCase())).length /
-				get(User).current.genres.length
-			) * 100;
+				get(User).current.genres.includes(x.toLowerCase())
+			).length /
+				get(User).current.genres.length) *
+			100;
 
 		// In cases where either playlist is notated but not both
 		if (playlist1.notated && !playlist2.notated) {
@@ -55,10 +55,8 @@ function sortPlaylists() {
 	User.set(get(User));
 }
 
-async function aggregatePlaylistGenres(playlist) {
+function aggregatePlaylistGenres(tracks) {
 	let genres = [];
-
-	const tracks = await Spotify.getPlaylistItems(playlist);
 
 	for (const index in tracks) {
 		genres = genres.concat(tracks[index].genres);

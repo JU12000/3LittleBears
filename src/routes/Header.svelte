@@ -36,7 +36,9 @@
 
 	<div class="pr-6">
 		{#if !$accessToken}
-			<button on:click={connect}>Connect With <span class="text-spotify">Spotify</span></button>
+			<button on:click={connect}
+				>Connect With <span class="text-spotify">Spotify</span></button
+			>
 		{:else}
 			<button on:click={logout}> Log Out </button>
 		{/if}

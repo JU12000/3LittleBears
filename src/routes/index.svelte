@@ -1,8 +1,8 @@
 <script>
 	import { accessToken } from '@/stores/auth';
 	import { page } from '$app/stores';
-	import Content from './Content.svelte';
-	import SalesPitch from './SalesPitch.svelte';
+	import Content from '@/routes/Content/Content.svelte';
+	import SalesPitch from '@/routes/SalesPitch.svelte';
 
 	//TODO: Add translation/termkey support across the site.
 

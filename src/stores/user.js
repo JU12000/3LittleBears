@@ -1,4 +1,4 @@
-import { get, writable } from "svelte/store";
+import { get, writable } from 'svelte/store';
 
 const defaultCurrent = {
 	artist: '',

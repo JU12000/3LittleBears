@@ -30,7 +30,7 @@ function getCurrentUser() {
 			throw new Error();
 		})
 		.then((data) => {
-			User.update(x => {
+			User.update((x) => {
 				return {
 					...x,
 					displayName: data['display_name']
@@ -73,13 +73,13 @@ function getCurrentlyPlayingTrack(resetTimeout = true) {
 		})
 		.then(async (data) => {
 			if (
-				!data
-				|| data.item.artists[0].name !== get(User).current.artist
-				|| data.item.name !== get(User).current.song
+				!data ||
+				data.item.artists[0].name !== get(User).current.artist ||
+				data.item.name !== get(User).current.song
 			) {
 				const genres = await getArtistGenres(data.item.artists[0].id);
 
-				User.update(x => {
+				User.update((x) => {
 					return {
 						...x,
 						current: {
@@ -98,7 +98,7 @@ function getCurrentlyPlayingTrack(resetTimeout = true) {
 			// Run this request again in 15 seconds or when the song ends, whichever
 			// comes first
 			const timeout = Math.min(
-				data ? (data.item.duration_ms - data.progress_ms) : 30000,
+				data ? data.item.duration_ms - data.progress_ms : 30000,
 				15000
 			);
 
@@ -171,17 +171,18 @@ function getUserPlaylists() {
 		})
 		.then(async (data) => {
 			const playlists = data.items
-				.filter(x =>
-					x.owner['display_name'] === get(User).displayName
-					&& !ignoreNotationRegex.test(x.description)
+				.filter(
+					(x) =>
+						x.owner['display_name'] === get(User).displayName &&
+						!ignoreNotationRegex.test(x.description)
 				)
-				.map(x => {
+				.map((x) => {
 					const notated = genreNotationRegex.test(x.description);
 
 					let genres;
 					if (notated) {
-						const genreNotationString = x.description
-							.match(genreNotationRegex)[0];
+						const genreNotationString =
+							x.description.match(genreNotationRegex)[0];
 						genres = genreNotationString
 							.substring(13, genreNotationString.length - 1)
 							.split(', ');
@@ -201,15 +202,18 @@ function getUserPlaylists() {
 				});
 
 			for (const index in playlists) {
-				if (playlists[index].genres.length === 0) {
-					const playlist = playlists[index];
-					playlist.genres = await Recommendations.aggregatePlaylistGenres(
-						playlist
+				const playlist = playlists[index];
+
+				playlist.tracks = await getPlaylistItems(playlist);
+
+				if (playlist.genres.length === 0) {
+					playlist.genres = Recommendations.aggregatePlaylistGenres(
+						playlist.tracks
 					);
 				}
 			}
 
-			User.update(x => {
+			User.update((x) => {
 				return {
 					...x,
 					playlists: playlists

@@ -38,5 +38,8 @@
 	<p class="p-2">
 		{item.message}
 	</p>
-	<button on:click={close} class="pb-2 pr-2 pt-0.5 self-start text-xs toast-close">x</button>
+	<button
+		on:click={close}
+		class="pb-2 pr-2 pt-0.5 self-start text-xs toast-close">x</button
+	>
 </div>

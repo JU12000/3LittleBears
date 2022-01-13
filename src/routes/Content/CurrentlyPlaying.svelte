@@ -1,5 +1,15 @@
 <script>
+	import Spotify from '$lib/Spotify/api';
 	import User from '@/stores/user';
+	import { onMount } from 'svelte';
+
+	onMount(() => {
+		Spotify.getCurrentlyPlayingTrack();
+	});
+
+	function refreshCurrentlyPlaying() {
+		Spotify.getCurrentlyPlayingTrack();
+	}
 </script>
 
 <div class="bg-slate-500 flex flex-col items-center py-5 text-center">
@@ -37,4 +47,10 @@
 			hitting the refresh button below!
 		</p>
 	{/if}
+</div>
+
+<div class="py-5 self-center">
+	<button on:click={refreshCurrentlyPlaying}>
+		Refresh Currently Playing
+	</button>
 </div>

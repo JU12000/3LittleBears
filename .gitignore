@@ -1,9 +1,10 @@
-.DS_Store
-node_modules
-/build
-/.svelte-kit
-/package
-.env
-.env.*
 !.env.example
 .appengine_build_output/
+.DS_Store
+.env
+.env.*
+.vscode
+/.svelte-kit
+/build
+/package
+node_modules
