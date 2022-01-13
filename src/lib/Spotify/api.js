@@ -1,6 +1,7 @@
 import { accessToken } from '@/stores/auth';
 import { get } from 'svelte/store';
 import handleError from '$lib/error';
+import Recommendations from '$lib/recommendations';
 import User from '@/stores/user';
 
 const base = 'https://api.spotify.com/v1';
@@ -29,9 +30,11 @@ function getCurrentUser() {
 			throw new Error();
 		})
 		.then((data) => {
-			User.set({
-				displayName: data['display_name'],
-				...get(User)
+			User.update(x => {
+				return {
+					...x,
+					displayName: data['display_name']
+				};
 			});
 		})
 		.catch((error) => {
@@ -39,9 +42,9 @@ function getCurrentUser() {
 		});
 }
 
-let getCurrentTrackTimeoutId;
+export let getCurrentTrackTimeoutId;
 
-function getCurrentTrack(resetTimeout = true) {
+function getCurrentlyPlayingTrack(resetTimeout = true) {
 	const requestURL = new URL(`${base}/me/player/currently-playing`);
 
 	fetch(requestURL, {
@@ -71,16 +74,20 @@ function getCurrentTrack(resetTimeout = true) {
 		.then(async (data) => {
 			if (
 				!data
-				|| data.item.artists[0].name != get(User).current.artist
-				|| data.item.name != get(User).current.song
+				|| data.item.artists[0].name !== get(User).current.artist
+				|| data.item.name !== get(User).current.song
 			) {
-				User.set({
-					current: {
-						artist: data ? data.item.artists[0].name : '',
-						song: data ? data.item.name : '',
-						genres: data ? await getArtistGenres(data.item.artists[0].id) : []
-					},
-					...get(User)
+				const genres = await getArtistGenres(data.item.artists[0].id);
+
+				User.update(x => {
+					return {
+						...x,
+						current: {
+							artist: data.item.artists[0].name,
+							song: data.item.name,
+							genres: genres
+						}
+					};
 				});
 			}
 
@@ -95,7 +102,13 @@ function getCurrentTrack(resetTimeout = true) {
 				15000
 			);
 
-			getCurrentTrackTimeoutId = setTimeout(getCurrentTrack.bind(false), timeout);
+			getCurrentTrackTimeoutId = setTimeout(
+				getCurrentlyPlayingTrack.bind(false),
+				timeout
+			);
+		})
+		.catch((error) => {
+			handleError(error);
 		});
 }
 
@@ -110,10 +123,23 @@ function getArtistGenres(id) {
 		})
 	})
 		.then((response) => {
-			return response.json();
+			if (response.ok) {
+				return response.json();
+			}
+
+			if (response.status === 401) {
+				throw {
+					name: 'expiredToken'
+				};
+			}
+
+			throw new Error();
 		})
 		.then((data) => {
 			return data.genres;
+		})
+		.catch((error) => {
+			handleError(error);
 		});
 }
 
@@ -131,45 +157,121 @@ function getUserPlaylists() {
 		})
 	})
 		.then((response) => {
-			return response.json();
+			if (response.ok) {
+				return response.json();
+			}
+
+			if (response.status === 401) {
+				throw {
+					name: 'expiredToken'
+				};
+			}
+
+			throw new Error();
 		})
-		.then((data) => {
-			User.set({
-				playlists: data.items
-					.filter(x =>
-						x.owner['display_name'] === get(User).displayName
-						&& !ignoreNotationRegex.test(x.description)
-					)
-					.map(x => {
-						const notated = genreNotationRegex.test(x.description);
+		.then(async (data) => {
+			const playlists = data.items
+				.filter(x =>
+					x.owner['display_name'] === get(User).displayName
+					&& !ignoreNotationRegex.test(x.description)
+				)
+				.map(x => {
+					const notated = genreNotationRegex.test(x.description);
 
-						let genres;
-						if (notated) {
-							const genreNotationString = x.description.match(genreNotationRegex)[0];
-							genres = genreNotationString.substring(13, genreNotationString.length - 1)
-								.split(', ');
-						} else {
-							genres = [];
-						}
+					let genres;
+					if (notated) {
+						const genreNotationString = x.description
+							.match(genreNotationRegex)[0];
+						genres = genreNotationString
+							.substring(13, genreNotationString.length - 1)
+							.split(', ');
+					} else {
+						genres = [];
+					}
 
-						return {
-							id: x.id,
-							description: x.description,
-							genres: genres,
-							image: x.images[0],
-							name: x.name,
-							notated: notated,
-							tracks: x.tracks.total
-						};
-					}),
-				...get(User)
+					return {
+						id: x.id,
+						description: x.description,
+						genres: genres,
+						image: x.images[0],
+						name: x.name,
+						notated: notated,
+						tracks: x.tracks
+					};
+				});
+
+			for (const index in playlists) {
+				if (playlists[index].genres.length === 0) {
+					const playlist = playlists[index];
+					playlist.genres = await Recommendations.aggregatePlaylistGenres(
+						playlist
+					);
+				}
+			}
+
+			User.update(x => {
+				return {
+					...x,
+					playlists: playlists
+				};
 			});
+		})
+		.catch((error) => {
+			handleError(error);
 		});
 }
 
+async function getPlaylistItems(playlist) {
+	const tracks = [];
+
+	let nextURL = playlist.tracks.href;
+	while (nextURL != null) {
+		await fetch(nextURL, {
+			method: 'GET',
+			headers: new Headers({
+				Authorization: `Bearer ${get(accessToken)}`,
+				'Content-Type': 'application/x-www-form-urlencoded'
+			})
+		})
+			.then((response) => {
+				if (response.ok) {
+					return response.json();
+				}
+
+				if (response.status === 401) {
+					throw {
+						name: 'expiredToken'
+					};
+				}
+
+				throw new Error();
+			})
+			.then(async (data) => {
+				nextURL = data.next;
+
+				for (const index in data.items) {
+					const track = data.items[index].track;
+
+					const genres = await getArtistGenres(track.artists[0].id);
+
+					tracks.push({
+						artist: track.artists[0].name,
+						song: track.name,
+						genres: genres
+					});
+				}
+			})
+			.catch((error) => {
+				handleError(error);
+			});
+	}
+
+	return tracks;
+}
+
 export default {
-	getCurrentTrack,
-	getCurrentTrackTimeoutId,
+	getCurrentlyPlayingTrack,
 	getCurrentUser,
+	getPlaylistItems,
 	getUserPlaylists
 };

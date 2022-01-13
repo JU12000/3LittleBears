@@ -1,4 +1,5 @@
 import { get } from 'svelte/store';
+import Spotify from '$lib/Spotify/api';
 import User from '@/stores/user';
 
 function sortPlaylists() {
@@ -7,13 +8,15 @@ function sortPlaylists() {
 		// Compute which of the two playlists contains more genres in common with
 		// the current song
 		playlist1.matchPercent =
-			(playlist1.genres.filter((x) => get(User).current.genres.includes(x.toLowerCase())).length /
-				get(User).current.genres.length) *
-			100;
+			(playlist1.genres.filter((x) =>
+				get(User).current.genres.includes(x.toLowerCase())).length /
+				get(User).current.genres.length
+			) * 100;
 		playlist2.matchPercent =
-			(playlist2.genres.filter((x) => get(User).current.genres.includes(x.toLowerCase())).length /
-				get(User).current.genres.length) *
-			100;
+			(playlist2.genres.filter((x) =>
+				get(User).current.genres.includes(x.toLowerCase())).length /
+				get(User).current.genres.length
+			) * 100;
 
 		// In cases where either playlist is notated but not both
 		if (playlist1.notated && !playlist2.notated) {
@@ -52,6 +55,30 @@ function sortPlaylists() {
 	User.set(get(User));
 }
 
+async function aggregatePlaylistGenres(playlist) {
+	let genres = [];
+
+	const tracks = await Spotify.getPlaylistItems(playlist);
+
+	for (const index in tracks) {
+		genres = genres.concat(tracks[index].genres);
+	}
+
+	let genreCountsMap = genres.reduce((map, genre) => {
+		map[genre] = (map[genre] || 0) + 1;
+		return map;
+	}, {});
+
+	let sortedGenreCountsMap = Object.keys(genreCountsMap).sort((a, b) => {
+		return genreCountsMap[b] - genreCountsMap[a];
+	});
+
+	genres = sortedGenreCountsMap.slice(0, 5);
+
+	return genres;
+}
+
 export default {
+	aggregatePlaylistGenres,
 	sortPlaylists
 };

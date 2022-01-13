@@ -1,7 +1,7 @@
 import { accessToken, refreshToken, state, verifier } from '@/stores/auth';
 import { get } from 'svelte/store';
+import { getCurrentTrackTimeoutId } from '$lib/Spotify/api';
 import { page } from '$app/stores';
-import Account from '$lib/Spotify/accounts';
 import getPkce from 'oauth-pkce';
 import handleError from '$lib/error';
 import Toast from '@/stores/toast';
@@ -11,7 +11,8 @@ const base = 'https://accounts.spotify.com';
 
 function generateState(length) {
 	let stateString = '';
-	const possible = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+	const possible =
+		'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
 
 	for (let i = 0; i < length; i++) {
 		stateString += possible.charAt(Math.floor(Math.random() * possible.length));
@@ -126,7 +127,10 @@ function handleAccessToken(data) {
 	accessToken.set(data['access_token']);
 	refreshToken.set(data['refresh_token']);
 
-	accessTokenTimeoutId = setTimeout(refreshAccessToken, data['expires_in'] * 1000);
+	accessTokenTimeoutId = setTimeout(
+		refreshAccessToken,
+		data['expires_in'] * 1000
+	);
 }
 
 function healthCheck() {
@@ -141,9 +145,8 @@ function logout() {
 	accessToken.set(null);
 	refreshToken.set(null);
 
-	//TODO: Clear API calls that are queued
 	clearTimeout(accessTokenTimeoutId);
-	clearTimeout(Account.getCurrentTrackTimeoutId);
+	clearTimeout(getCurrentTrackTimeoutId);
 	get(User).clear();
 }
 

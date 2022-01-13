@@ -30,7 +30,7 @@
 	{:else}
 		<p class="text-lg">Nothing :(</p>
 		<p class="text-sm">
-			Play some music on <span class="text-spotify-dark">Spotify</span>, or try hitting the refresh
+			Play some music on <span class="text-spotify">Spotify</span>, or try hitting the refresh
 			button below!
 		</p>
 	{/if}

@@ -7,7 +7,7 @@
 	import User from '@/stores/user';
 
 	function refreshCurrentlyPlaying() {
-		Spotify.getCurrentTrack();
+		Spotify.getCurrentlyPlayingTrack();
 	}
 
 	async function refreshPlaylists() {

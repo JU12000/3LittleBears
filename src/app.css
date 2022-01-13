@@ -17,10 +17,6 @@
 	color: #1DB954;
 }
 
-.text-spotify-dark {
-	color: #191414;
-}
-
 div#svelte {
 	@apply bg-slate-700;
 }
