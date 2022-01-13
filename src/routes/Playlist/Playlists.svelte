@@ -1,10 +1,9 @@
 <script>
-	import { current } from '@/stores/user';
-	import { playlists } from '@/stores/user';
 	import Playlist from './Playlist.svelte';
 	import Recommendations from '$lib/recommendations';
+	import User from '@/stores/user';
 
-	$: $current, Recommendations.sortPlaylists();
+	$: $User.current, Recommendations.sortPlaylists();
 </script>
 
 <div class="bg-slate-500 flex flex-col flex-grow items-center py-5 text-center">
@@ -14,9 +13,9 @@
 	</p>
 
 	<div class="flex flex-row flex-grow">
-		{#if $playlists.length > 0}
+		{#if $User.playlists.length > 0}
 			<div class="flex flex-wrap justify-evenly">
-				{#each $playlists as playlist}
+				{#each $User.playlists as playlist}
 					<Playlist {playlist} />
 				{/each}
 			</div>

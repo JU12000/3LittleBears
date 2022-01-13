@@ -1,16 +1,16 @@
 <script>
-	import { current } from '@/stores/user';
+	import User from '@/stores/user';
 </script>
 
 <div class="bg-slate-500 flex flex-col items-center py-5 text-center">
 	<h2 class="font-semibold mb-5 text-xl">Currently Playing:</h2>
 
-	{#if $current.artist}
-		<p class="text-lg">{$current.artist}</p>
-		<p>{$current.song}</p>
+	{#if $User.current.artist}
+		<p class="text-lg">{$User.current.artist}</p>
+		<p>{$User.current.song}</p>
 		<div class="flex flex-row flex-wrap justify-around pt-4">
-			{#if $current.genres.length > 0}
-				{#each $current.genres as genre, index}
+			{#if $User.current.genres.length > 0}
+				{#each $User.current.genres as genre, index}
 					<a
 						href="https://everynoise.com/research.cgi?mode=genre&name={genre.replace(' ', '+')}"
 						class="px-2 text-sm {index % 2 === 0 ? 'text-slate-900' : ''}"

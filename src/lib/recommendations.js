@@ -1,18 +1,18 @@
-import { current, playlists } from '@/stores/user';
 import { get } from 'svelte/store';
+import User from '@/stores/user';
 
 function sortPlaylists() {
-	get(playlists).sort((playlist1, playlist2) => {
+	get(User).playlists.sort((playlist1, playlist2) => {
 
 		// Compute which of the two playlists contains more genres in common with
 		// the current song
 		playlist1.matchPercent =
-			(playlist1.genres.filter((x) => get(current).genres.includes(x.toLowerCase())).length /
-				get(current).genres.length) *
+			(playlist1.genres.filter((x) => get(User).current.genres.includes(x.toLowerCase())).length /
+				get(User).current.genres.length) *
 			100;
 		playlist2.matchPercent =
-			(playlist2.genres.filter((x) => get(current).genres.includes(x.toLowerCase())).length /
-				get(current).genres.length) *
+			(playlist2.genres.filter((x) => get(User).current.genres.includes(x.toLowerCase())).length /
+				get(User).current.genres.length) *
 			100;
 
 		// In cases where either playlist is notated but not both
@@ -41,14 +41,15 @@ function sortPlaylists() {
 			return 1;
 		}
 
-		// In all other cases, don't sort.
+		// In all other cases, sort the one with less songs first.
+
 		//TODO: Here is where to sort by Spotify stats (dancability etc.)
 		return 0;
 	});
 
 	// This redundant assignment triggers svelte to re-compute the {#each} that
 	// displays playlists, thus updating the page.
-	playlists.set(get(playlists));
+	User.set(get(User));
 }
 
 export default {

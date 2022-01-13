@@ -1,18 +1,24 @@
 <script>
 	import { accessToken } from '@/stores/auth';
+	import { browser } from '$app/env';
 	import { onMount } from 'svelte';
-	import Spotify from '$lib/Spotify/api';
+	import { page } from '$app/stores';
+	import Account from '$lib/Spotify/accounts';
 
 	onMount(() => {
-		Spotify.healthCheck();
+		Account.healthCheck();
 	});
 
 	async function connect() {
-		window.location = await Spotify.getAuthorization();
+		window.location = await Account.getAuthorizationURL();
 	}
 
 	function logout() {
-		Spotify.logout();
+		Account.logout();
+	}
+
+	$: if (browser && $page.url.searchParams.get('code')) {
+		Account.getAccessToken($page.url.searchParams.get('code'));
 	}
 </script>
 

@@ -1,109 +1,9 @@
-import { accessToken, refreshToken, state, verifier } from '@/stores/auth';
-import { current } from '@/stores/user';
-import { displayName } from '@/stores/user';
+import { accessToken } from '@/stores/auth';
 import { get } from 'svelte/store';
-import { page } from '$app/stores';
-import { playlists } from '@/stores/user';
-import toast from '@/stores/toast';
+import handleError from '$lib/error';
+import User from '@/stores/user';
 
-const authBase = 'https://accounts.spotify.com';
 const base = 'https://api.spotify.com/v1';
-
-function getAccessToken(authCode) {
-	const responseState = get(page).url.searchParams.get('state');
-
-	const localState = get(state);
-
-	if (responseState != null && responseState === localState) {
-		const accessURL = new URL(`${authBase}/api/token`);
-
-		const accessBody = new URLSearchParams({
-			grant_type: 'authorization_code',
-			code: authCode,
-			redirect_uri: import.meta.env.VITE_REDIRECT_URL,
-			client_id: import.meta.env.VITE_CLIENT_ID,
-			code_verifier: get(verifier)
-		});
-
-		fetch(accessURL, {
-			method: 'POST',
-			body: accessBody,
-			headers: new Headers({
-				Authorization: import.meta.env.VITE_AUTHORIZATION,
-				'Content-Type': 'application/x-www-form-urlencoded'
-			})
-		})
-			.then((response) => {
-				return response.json();
-			})
-			.then((data) => handleAccessToken(data))
-			.catch((error) => {
-				console.log(error);
-			});
-	}
-}
-
-function refreshAccessToken() {
-	const refreshURL = new URL(`${authBase}/api/token`);
-
-	const refreshBody = new URLSearchParams({
-		grant_type: 'refresh_token',
-		refresh_token: get(refreshToken),
-		client_id: import.meta.env.VITE_CLIENT_ID
-	});
-
-	fetch(refreshURL, {
-		method: 'POST',
-		body: refreshBody,
-		headers: new Headers({
-			Authorization: import.meta.env.VITE_AUTHORIZATION,
-			'Content-Type': 'application/x-www-form-urlencoded'
-		})
-	})
-		.then((response) => {
-			if (response.ok) {
-				return response.json();
-			}
-
-			if (response.status === 400) {
-				logout();
-
-				throw new Error('Please log in again.');
-			}
-		})
-		.then((data) => handleAccessToken(data))
-		.catch((error) => {
-			get(toast).push(error.message);
-		});
-}
-
-function healthCheck() {
-	const localAccessToken = get(accessToken);
-
-	if (localAccessToken) {
-		refreshAccessToken();
-	}
-}
-
-function handleAccessToken(data) {
-	accessToken.set(data['access_token']);
-	refreshToken.set(data['refresh_token']);
-
-	setTimeout(refreshAccessToken, data['expires_in'] * 1000);
-}
-
-function logout() {
-	accessToken.set(null);
-	refreshToken.set(null);
-
-	current.set({
-		artist: '',
-		song: '',
-		genres: []
-	});
-}
-
-let getCurrentTrackTimeoutId;
 
 function getCurrentUser() {
 	const requestURL = new URL(`${base}/me`);
@@ -116,12 +16,30 @@ function getCurrentUser() {
 		})
 	})
 		.then((response) => {
-			return response.json();
+			if (response.ok) {
+				return response.json();
+			}
+
+			if (response.status === 401) {
+				throw {
+					name: 'expiredToken'
+				};
+			}
+
+			throw new Error();
 		})
 		.then((data) => {
-			displayName.set(data['display_name']);
+			User.set({
+				displayName: data['display_name'],
+				...get(User)
+			});
+		})
+		.catch((error) => {
+			handleError(error);
 		});
 }
+
+let getCurrentTrackTimeoutId;
 
 function getCurrentTrack(resetTimeout = true) {
 	const requestURL = new URL(`${base}/me/player/currently-playing`);
@@ -134,22 +52,35 @@ function getCurrentTrack(resetTimeout = true) {
 		})
 	})
 		.then((response) => {
-			if(response.status === 204) {
+			if (response.status === 204) {
 				return undefined;
 			}
 
-			return response.json();
+			if (response.ok) {
+				return response.json();
+			}
+
+			if (response.status === 401) {
+				throw {
+					name: 'expiredToken'
+				};
+			}
+
+			throw new Error();
 		})
 		.then(async (data) => {
 			if (
 				!data
-				|| data.item.artists[0].name != get(current).artist
-				|| data.item.name != get(current).song
+				|| data.item.artists[0].name != get(User).current.artist
+				|| data.item.name != get(User).current.song
 			) {
-				current.set({
-					artist: data ? data.item.artists[0].name : '',
-					song: data ? data.item.name : '',
-					genres: data ? await getArtistGenres(data.item.artists[0].id) : []
+				User.set({
+					current: {
+						artist: data ? data.item.artists[0].name : '',
+						song: data ? data.item.name : '',
+						genres: data ? await getArtistGenres(data.item.artists[0].id) : []
+					},
+					...get(User)
 				});
 			}
 
@@ -203,9 +134,10 @@ function getUserPlaylists() {
 			return response.json();
 		})
 		.then((data) => {
-			playlists.set(
-				data.items
-					.filter(x => x.owner['display_name'] === get(displayName)
+			User.set({
+				playlists: data.items
+					.filter(x =>
+						x.owner['display_name'] === get(User).displayName
 						&& !ignoreNotationRegex.test(x.description)
 					)
 					.map(x => {
@@ -229,17 +161,15 @@ function getUserPlaylists() {
 							notated: notated,
 							tracks: x.tracks.total
 						};
-					})
-			);
+					}),
+				...get(User)
+			});
 		});
 }
 
 export default {
-	getAccessToken,
-	getAuthorization,
 	getCurrentTrack,
+	getCurrentTrackTimeoutId,
 	getCurrentUser,
-	getUserPlaylists,
-	healthCheck,
-	logout
+	getUserPlaylists
 };
