@@ -1,7 +1,7 @@
 module.exports = {
 	root: true,
 	extends: ['eslint:recommended', 'prettier'],
-	plugins: ['svelte3'],
+	plugins: ['prettier', 'svelte3'],
 	overrides: [{ files: ['*.svelte'], processor: 'svelte3/svelte3' }],
 	parserOptions: {
 		sourceType: 'module',
@@ -13,8 +13,6 @@ module.exports = {
 		node: true
 	},
 	rules: {
-		semi: ['error', 'always'],
-		'comma-dangle': ['error', 'never'],
-		indent: ['error', 'tab']
+		'prettier/prettier': 'error'
 	}
 };

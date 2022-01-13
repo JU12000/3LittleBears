@@ -6,6 +6,9 @@
 	import Account from '$lib/Spotify/accounts';
 
 	onMount(() => {
+		// Check if the user still has an Authorization from Spotify, and get a new
+		// accessToken. This handles cases where users are returning to the site
+		// after closing it in the same browser session.
 		Account.healthCheck();
 	});
 
@@ -17,6 +20,8 @@
 		Account.logout();
 	}
 
+	// This should only run after the Auth redirect, gets the access token the
+	// first time.
 	$: if (browser && $page.url.searchParams.get('code')) {
 		Account.getAccessToken($page.url.searchParams.get('code'));
 	}

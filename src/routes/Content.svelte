@@ -16,9 +16,11 @@
 	}
 
 	async function getContent() {
-		await Spotify.getCurrentUser();
-		await refreshCurrentlyPlaying();
-		refreshPlaylists();
+		if ($User.displayName === '') {
+			await Spotify.getCurrentUser();
+			await refreshCurrentlyPlaying();
+			refreshPlaylists();
+		}
 	}
 
 	$: if ($accessToken) {

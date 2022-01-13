@@ -32,7 +32,3 @@ button {
 button:not(.toast-close) {
 	@apply bg-blue-300 bg-opacity-30 border-2 border-blue-200 py-1 px-3 rounded-md sm:text-base text-xs text-blue-50;
 }
-
-footer {
-	width: 100vw;
-}

@@ -8,8 +8,10 @@
 	"
 >
 	<p class="font-thin pl-3 text-sm">
-		<span class="font-normal text-base">&copy;</span>:
-		<a class="text-blue-300" href="https://github.com/JU12000">James Williams</a>, 2022
+		<span class="font-normal text-sm">&copy;</span>:
+		<a class="text-blue-300" href="https://github.com/JU12000/3LittleBears">
+			James Williams
+		</a>, 2022
 	</p>
 	<div class="flex items-center">
 		<p class="font-thin pr-4 text-xs">
