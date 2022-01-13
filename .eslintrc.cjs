@@ -11,10 +11,5 @@ module.exports = {
 		browser: true,
 		es2017: true,
 		node: true
-	},
-	rules: {
-		semi: ['error', 'always'],
-		'comma-dangle': ['error', 'never'],
-		indent: ['error', 'tab']
 	}
 };

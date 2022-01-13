@@ -1,18 +1,29 @@
 <script>
 	import { accessToken } from '@/stores/auth';
+	import { browser } from '$app/env';
 	import { onMount } from 'svelte';
-	import Spotify from '$lib/spotify';
+	import { page } from '$app/stores';
+	import Account from '$lib/Spotify/accounts';
 
 	onMount(() => {
-		Spotify.healthCheck();
+		// Check if the user still has an Authorization from Spotify, and get a new
+		// accessToken. This handles cases where users are returning to the site
+		// after closing it in the same browser session.
+		Account.healthCheck();
 	});
 
 	async function connect() {
-		window.location = await Spotify.getAuthorization();
+		window.location = await Account.getAuthorizationURL();
 	}
 
 	function logout() {
-		Spotify.logout();
+		Account.logout();
+	}
+
+	// This should only run after the Auth redirect, gets the access token the
+	// first time.
+	$: if (browser && $page.url.searchParams.get('code')) {
+		Account.getAccessToken($page.url.searchParams.get('code'));
 	}
 </script>
 
@@ -25,7 +36,9 @@
 
 	<div class="pr-6">
 		{#if !$accessToken}
-			<button on:click={connect}>Connect With <span class="text-spotify">Spotify</span></button>
+			<button on:click={connect}
+				>Connect With <span class="text-spotify">Spotify</span></button
+			>
 		{:else}
 			<button on:click={logout}> Log Out </button>
 		{/if}

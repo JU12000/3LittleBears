@@ -1,11 +1,10 @@
 <script>
 	import { accessToken } from '@/stores/auth';
 	import { page } from '$app/stores';
-	import Content from './Content.svelte';
-	import SalesPitch from './SalesPitch.svelte';
-	import Spotify from '$lib/spotify';
+	import Content from '@/routes/Content/Content.svelte';
+	import SalesPitch from '@/routes/SalesPitch.svelte';
 
-	$: Spotify.getAccessToken($page.url.searchParams.get('code'));
+	//TODO: Add translation/termkey support across the site.
 
 	$: if ($accessToken) {
 		history.replaceState(null, '', $page.url.pathname);

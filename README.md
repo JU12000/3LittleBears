@@ -45,14 +45,14 @@ Yes, to quote a young Anakin: "This is where the fun begins".
 
 Let's say you're an aspiring young playlist creator, you like the organic
 recommendations, but you've already got a playlist for all your
-[German Dark Minimal Techno](https://everynoise.com/research.cgi?mode=genre&name=german+dark+minimal+techno). You want that to show up before anything else no matter how
+[German Dark Minimal Techno](https://everynoise.com/research.cgi?mode=genre&name=german+dark+minimal+techno).
+You want that to show up before anything else no matter how
 badly we recommend you don't add a song to it because you know better
 what you want than we do. I know how you feel, so you can add `3LittleBears{}`
 to any of your Spotify playlist descriptions and include any sub-genres you want
 and we'll treat any match to those playlists as better than a match to one without.
 
-For example: ```This is my cool playlist description. 3LittleBears{math rock,
-instrumental math rock}```
+For example: `This is my cool playlist description. 3LittleBears{math rock, instrumental math rock}`
 
 Will always cause that playlist to get sorted first for any song that has one or
 more of those two genres. If a song meets the genre critieria of two playlists

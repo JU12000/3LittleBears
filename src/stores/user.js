@@ -1,11 +1,27 @@
-import { writable } from "svelte/store";
+import { get, writable } from 'svelte/store';
 
-export const current = writable({
+const defaultCurrent = {
 	artist: '',
 	song: '',
 	genres: []
+};
+
+const defaultDisplayName = '';
+
+const defaultPlaylists = [];
+
+const user = writable({
+	current: defaultCurrent,
+	displayName: defaultDisplayName,
+	playlists: defaultPlaylists,
+	clear: () => {
+		user.set({
+			current: defaultCurrent,
+			displayName: defaultDisplayName,
+			playlists: defaultPlaylists,
+			clear: get(user).clear
+		});
+	}
 });
 
-export const displayName = writable('');
-
-export const playlists = writable([]);
+export default user;

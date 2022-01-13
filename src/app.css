@@ -14,18 +14,18 @@
 }
 
 .text-spotify {
-	color: #1DB954;
-}
-
-.text-spotify-dark {
-	color: #191414;
+	color: #1db954;
 }
 
 div#svelte {
 	@apply bg-slate-700;
 }
 
-h1, h2, h3, p, a {
+h1,
+h2,
+h3,
+p,
+a {
 	@apply font-mono text-blue-50;
 }
 
@@ -35,8 +35,4 @@ button {
 
 button:not(.toast-close) {
 	@apply bg-blue-300 bg-opacity-30 border-2 border-blue-200 py-1 px-3 rounded-md sm:text-base text-xs text-blue-50;
-}
-
-footer {
-	width: 100vw;
 }
