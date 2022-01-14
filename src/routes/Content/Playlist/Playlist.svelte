@@ -4,18 +4,23 @@
 
 	export let playlist;
 
+	let currentAlreadyInPlaylist = false;
+
 	function addToPlaylist() {
 		Spotify.addTrackToPlaylist(playlist.id, $User.current.id);
 	}
 
-	let currentAlreadyInPlaylist = false;
+	function isCurrentAlreadyInPlaylist() {
+		currentAlreadyInPlaylist =
+			playlist.tracks.filter(
+				(x) =>
+					x.name === $User.current.name && x.song === $User.current.song
+			).length > 0
+				? true
+				: false;
+	}
 
-	$: currentAlreadyInPlaylist =
-		playlist.tracks.filter(
-			(x) => x.name === $User.current.name && x.song === $User.current.song
-		).length > 0
-			? true
-			: false;
+	$: $User.current.id, isCurrentAlreadyInPlaylist();
 </script>
 
 <div class="bg-slate-700 flex flex-col text-center mb-6 mx-5 max-w-min">

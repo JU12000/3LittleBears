@@ -73,10 +73,11 @@ function getCurrentlyPlayingTrack(resetTimeout = true) {
 		})
 		.then(async (data) => {
 			if (
-				!data ||
-				data.item.artists[0].name !== get(User).current.artist ||
-				data.item.name !== get(User).current.song
+				!!data &&
+				(data.item.artists[0].name !== get(User).current.artist ||
+					data.item.name !== get(User).current.song)
 			) {
+				console.log(data);
 				const genres = await getArtistGenres(data.item.artists[0].id);
 
 				User.update((x) => {

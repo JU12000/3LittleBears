@@ -78,7 +78,7 @@ Though if that happens there will be a nice red button at the bottom of the page
 which allows you to delete all of your data. If we do save anything we will also
 delete it if it hasn't been used in 30 days.
 
-#### There You Go
+### There You Go
 
 That's about it, bugs can be reported here, as can feature requests. Constructive
 criticism is always welcome, everything else can be screamed into a jar and placed

@@ -1,6 +1,7 @@
 import { get } from 'svelte/store';
 import Account from '$lib/Spotify/accounts';
 import Toast from '@/stores/toast';
+import { dev } from '$app/env';
 
 export default function (error) {
 	if (error.name === 'refresh400' || error.name === 'expiredToken') {
@@ -14,4 +15,8 @@ export default function (error) {
 	Account.logout();
 
 	get(Toast).push('Unexpected error, please try reloading the site.');
+
+	if (dev) {
+		throw error;
+	}
 }

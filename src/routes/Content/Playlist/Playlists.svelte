@@ -14,7 +14,7 @@
 		Recommendations.sortPlaylists();
 	}
 
-	$: $User.current, Recommendations.sortPlaylists();
+	$: $User.current.id, Recommendations.sortPlaylists();
 </script>
 
 <div
