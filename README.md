@@ -69,6 +69,15 @@ then you're going to want to remove it from the recommendation system. putting
 `3LittleBearsIgnore` anywhere in the description of a playlist will stop it from
 being loaded on the site, and we promise to never talk about it behind it's back.
 
+## So What Are You Doing With All My Data?
+
+Absolutely nothing, we need some scopes from Spotify to get your data but everything
+runs while you're on the site and we don't save anything. In the future we might
+save the content of your playlists so that initial loading doesn't take so long.
+Though if that happens there will be a nice red button at the bottom of the page
+which allows you to delete all of your data. If we do save anything we will also
+delete it if it hasn't been used in 30 days.
+
 #### There You Go
 
 That's about it, bugs can be reported here, as can feature requests. Constructive

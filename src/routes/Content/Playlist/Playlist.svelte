@@ -1,10 +1,11 @@
 <script>
+	import Spotify from '$lib/Spotify/api';
 	import User from '@/stores/user';
 
 	export let playlist;
 
 	function addToPlaylist() {
-		// Spotify.addTrackToPlaylist($User.current);
+		Spotify.addTrackToPlaylist(playlist.id, $User.current.id);
 	}
 
 	let currentAlreadyInPlaylist = false;

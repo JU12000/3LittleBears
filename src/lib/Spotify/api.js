@@ -83,6 +83,7 @@ function getCurrentlyPlayingTrack(resetTimeout = true) {
 					return {
 						...x,
 						current: {
+							id: data.item.id,
 							artist: data.item.artists[0].name,
 							song: data.item.name,
 							genres: genres
@@ -259,6 +260,7 @@ async function getPlaylistItems(playlist) {
 					const genres = await getArtistGenres(track.artists[0].id);
 
 					tracks.push({
+						id: track.id,
 						artist: track.artists[0].name,
 						song: track.name,
 						genres: genres
@@ -273,7 +275,41 @@ async function getPlaylistItems(playlist) {
 	return tracks;
 }
 
+function addTrackToPlaylist(playlistId, trackId) {
+	const requestURL = new URL(`${base}/playlists/${playlistId}/tracks`);
+
+	return fetch(requestURL, {
+		method: 'POST',
+		body: JSON.stringify({
+			uris: [`spotify:track:${trackId}`]
+		}),
+		headers: new Headers({
+			Authorization: `Bearer ${get(accessToken)}`,
+			'Content-Type': 'application/json'
+		})
+	})
+		.then(async (response) => {
+			if (response.ok) {
+				await getUserPlaylists();
+				Recommendations.sortPlaylists();
+				return;
+			}
+
+			if (response.status === 401) {
+				throw {
+					name: 'expiredToken'
+				};
+			}
+
+			throw new Error();
+		})
+		.catch((error) => {
+			handleError(error);
+		});
+}
+
 export default {
+	addTrackToPlaylist,
 	getCurrentlyPlayingTrack,
 	getCurrentUser,
 	getPlaylistItems,
