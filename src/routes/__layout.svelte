@@ -5,6 +5,10 @@
 	import Toast from './Toast/Toast.svelte';
 </script>
 
+<svelte:head>
+	<title>3 Little Bears</title>
+</svelte:head>
+
 <div class="flex flex-col min-h-screen">
 	<Header />
 

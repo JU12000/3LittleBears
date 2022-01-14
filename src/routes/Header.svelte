@@ -29,7 +29,7 @@
 
 <header class="bg-slate-700 flex h-16 items-center">
 	<!--TODO: Icon here, remove temp icon-->
-	<p class="pl-3">(^^)</p>
+	<img class="pl-3" src="favicon.png" alt="3 Little Bears Logo" />
 	<h1 class="font-bold pl-1 sm:text-2xl">3LittleBears</h1>
 
 	<span class="flex-grow" />
