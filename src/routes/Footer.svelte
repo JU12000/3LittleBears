@@ -18,9 +18,15 @@
 	</p>
 	<div class="flex items-center">
 		<p class="font-thin pr-4 text-xs">
-			Powered By <a class="spotify-text" href="https://spotify.com"
-				>Spotify</a
+			Powered By
+			<a
+				href="https://spotify.com"
+				class="spotify-text"
+				rel="noopener norefferer"
+				target="_blank"
 			>
+				Spotify
+			</a>
 		</p>
 		<div class="pr-3 spotify-logo">
 			<img src="/Spotify.png" alt="Spotify Logo" />

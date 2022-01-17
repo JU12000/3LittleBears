@@ -23,28 +23,40 @@
 	$: $User.current.id, isCurrentAlreadyInPlaylist();
 </script>
 
-<div class="bg-slate-700 flex flex-col text-center mb-6 mx-5 max-w-min">
-	<img
-		style="max-width: 200px;"
-		src={playlist.image.url}
-		alt={`Playlist: ${playlist.name} Cover Image`}
-	/>
-	<div class="flex flex-col flex-grow justify-between pb-2">
-		<p>{playlist.name}</p>
-		<p>Tracks: {playlist.tracks.length}</p>
-		{#if playlist.notated && playlist.matchPercent > 0}
-			<p class="text-emerald-500">Genre Notation Match</p>
-		{/if}
-		<!-- TODO: Implement a list of matching genres when clicking on the match
+<div class="flex flex-col mb-6 mx-5">
+	<div
+		class="bg-slate-700 flex flex-col flex-grow mb-1 text-center max-w-min"
+	>
+		<img
+			style="max-width: 200px;"
+			src={playlist.image.url}
+			alt={`Playlist: ${playlist.name} Cover Image`}
+		/>
+		<div class="flex flex-col flex-grow justify-between pb-2">
+			<p>{playlist.name}</p>
+			<p>Tracks: {playlist.tracks.length}</p>
+			{#if playlist.notated && playlist.matchPercent > 0}
+				<p class="text-emerald-500">Genre Notation Match</p>
+			{/if}
+			<!-- TODO: Implement a list of matching genres when clicking on the match
 			percentage -->
-		<p>Match: {Math.floor(playlist.matchPercent | 0)}%</p>
+			<p>Match: {Math.floor(playlist.matchPercent | 0)}%</p>
 
-		{#if !currentAlreadyInPlaylist}
-			<button on:click={addToPlaylist} class="self-center w-fit">
-				Add to Playlist
-			</button>
-		{:else}
-			<p class="text-rose-800">Already in Playlist</p>
-		{/if}
+			{#if !currentAlreadyInPlaylist}
+				<button on:click={addToPlaylist} class="self-center w-fit">
+					Add to Playlist
+				</button>
+			{:else}
+				<p class="text-rose-800">Already in Playlist</p>
+			{/if}
+		</div>
 	</div>
+	<a
+		href={playlist.href}
+		class="text-blue-300"
+		rel="noopener norefferer"
+		target="_blank"
+	>
+		Open on Spotify
+	</a>
 </div>

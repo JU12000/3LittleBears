@@ -197,6 +197,7 @@ function getUserPlaylists() {
 						id: x.id,
 						description: x.description,
 						genres: genres,
+						href: x['external_urls'].spotify,
 						image: x.images[0],
 						name: x.name,
 						notated: notated,

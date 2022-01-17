@@ -16,7 +16,12 @@
 	<div class="mb-5">
 		<h2 class="font-semibold text-xl">Currently Playing:</h2>
 		{#if $User.current.id}
-			<a href={$User.current.href} class="text-blue-300">
+			<a
+				href={$User.current.href}
+				class="text-blue-300"
+				rel="noopener norefferer"
+				target="_blank"
+			>
 				Open on Spotify
 			</a>
 		{/if}
