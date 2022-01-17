@@ -13,9 +13,16 @@
 </script>
 
 <div class="bg-slate-500 flex flex-col items-center py-5 text-center">
-	<h2 class="font-semibold mb-5 text-xl">Currently Playing:</h2>
+	<div class="mb-5">
+		<h2 class="font-semibold text-xl">Currently Playing:</h2>
+		{#if $User.current.id}
+			<a href={$User.current.href} class="text-blue-300">
+				Open on Spotify
+			</a>
+		{/if}
+	</div>
 
-	{#if $User.current.artist}
+	{#if $User.current.id}
 		<p class="text-lg">{$User.current.artist}</p>
 		<p>{$User.current.song}</p>
 		<div class="flex flex-row flex-wrap justify-around pt-4">

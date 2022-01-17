@@ -12,7 +12,7 @@
 
 {#if $User.displayName !== ''}
 	<div class="bg-slate-700 flex flex-col flex-grow">
-		<div class="py-5 self-center">
+		<div class="mb-2 self-center">
 			<p class="text-center">
 				Welcome, {$User.displayName}. It's good to have you!
 			</p>

@@ -86,6 +86,7 @@ function getCurrentlyPlayingTrack(resetTimeout = true) {
 						current: {
 							id: data.item.id,
 							artist: data.item.artists[0].name,
+							href: data.context['external_urls'].spotify,
 							song: data.item.name,
 							genres: genres
 						}
