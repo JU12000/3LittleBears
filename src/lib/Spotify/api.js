@@ -77,7 +77,6 @@ function getCurrentlyPlayingTrack(resetTimeout = true) {
 				(data.item.artists[0].name !== get(User).current.artist ||
 					data.item.name !== get(User).current.song)
 			) {
-				console.log(data);
 				const genres = await getArtistGenres(data.item.artists[0].id);
 
 				User.update((x) => {
@@ -86,7 +85,7 @@ function getCurrentlyPlayingTrack(resetTimeout = true) {
 						current: {
 							id: data.item.id,
 							artist: data.item.artists[0].name,
-							href: data.context['external_urls'].spotify,
+							href: data.item['external_urls'].spotify,
 							song: data.item.name,
 							genres: genres
 						}
@@ -233,7 +232,8 @@ async function getPlaylistItems(playlist) {
 	const tracks = [];
 
 	let nextURL = playlist.tracks.href;
-	while (nextURL != null) {
+	let hasErrored = false;
+	while (hasErrored === false && nextURL !== null) {
 		await fetch(nextURL, {
 			method: 'GET',
 			headers: new Headers({
@@ -271,6 +271,7 @@ async function getPlaylistItems(playlist) {
 				}
 			})
 			.catch((error) => {
+				hasErrored = true;
 				handleError(error);
 			});
 	}

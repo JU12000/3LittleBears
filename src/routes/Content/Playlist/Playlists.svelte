@@ -5,8 +5,12 @@
 	import User from '@/stores/user';
 	import { onMount } from 'svelte';
 
-	onMount(() => {
-		Spotify.getUserPlaylists();
+	let loading = false;
+
+	onMount(async () => {
+		loading = true;
+		await Spotify.getUserPlaylists();
+		loading = false;
 	});
 
 	async function refreshPlaylists() {
@@ -26,17 +30,33 @@
 		currently playing song.
 	</p>
 
-	<div class="flex flex-row flex-grow">
-		{#if $User.playlists.length > 0}
-			<div class="flex flex-wrap justify-evenly">
-				{#each $User.playlists as playlist}
-					<Playlist {playlist} />
-				{/each}
-			</div>
+	<div class="flex flex-row flex-grow justify-center">
+		{#if !loading}
+			{#if $User.playlists.length > 0}
+				<div class="flex flex-wrap justify-evenly">
+					{#each $User.playlists as playlist}
+						<Playlist {playlist} />
+					{/each}
+				</div>
+			{:else}
+				<p class="flex items-center md:w-1/2 text-lg">
+					Hmm, you don't have any playlists. Keep in mind we can't track
+					playlists that you are only a collaborator in.
+				</p>
+			{/if}
 		{:else}
-			<p class="items-center flex text-sm">
-				Hmm, you don't have any playlists. Keep in mind we can't track
-				playlists that you are only a collaborator in.
+			<p class="flex flex-col justify-center md:w-1/2 text-lg">
+				Loading. This could take a while if you have a lot of playlists.
+				Consider using annotations to speed up loading. You can learn about
+				annotations by following the link below.
+				<a
+					href="https://github.com/JU12000/3LittleBears#readme"
+					class="text-blue-300"
+					rel="noopener norefferer"
+					target="_blank"
+				>
+					README
+				</a>
 			</p>
 		{/if}
 	</div>

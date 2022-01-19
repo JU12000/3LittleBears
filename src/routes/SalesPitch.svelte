@@ -1,4 +1,4 @@
-<div class="flex flex-col items-center justify-start py-5">
+<div class="flex flex-col items-center justify-start px-3 py-5">
 	<p class="text-2xl text-center">
 		Welcome to <span class="text-blue-200">3LittleBears</span>!
 	</p>
@@ -16,7 +16,7 @@
 	<p class="md:w-1/2 pt-4 text-lg text-center">
 		You can also check out the
 		<a
-			href="https://github.com/JU12000/3LittleBears"
+			href="https://github.com/JU12000/3LittleBears#readme"
 			class="text-blue-300"
 			rel="noopener norefferer"
 			target="_blank"

@@ -10,8 +10,10 @@
 	<p class="font-thin pl-3 text-sm">
 		<span class="font-normal text-sm">&copy;</span>:
 		<a
+			href="https://github.com/JU12000/3LittleBears#readme"
 			class="text-blue-300"
-			href="https://github.com/JU12000/3LittleBears"
+			rel="noopener norefferer"
+			target="_blank"
 		>
 			James Williams
 		</a>, 2022

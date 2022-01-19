@@ -22,8 +22,7 @@ genres come from Spotify, so we can use them to build really specific playlists.
 Not ever song has had genres assigned, so sometimes we can't make a recommendation
 though it is really cool to find one with no genres! If you click on one of the
 genres it will take you to the research page for that genre at the incredible
-site [Every Noise](https://everynoise.com) so you can find more bands that Spotify
-tagged with that genre.
+site [Every Noise](https://everynoise.com) so you can find more artists that Spotify tagged with that genre.
 
 ### See Which Playlist The Bears Recommend
 
@@ -46,9 +45,7 @@ Yes, to quote a young Anakin: "This is where the fun begins".
 Let's say you're an aspiring young playlist creator, you like the organic
 recommendations, but you've already got a playlist for all your
 [German Dark Minimal Techno](https://everynoise.com/research.cgi?mode=genre&name=german+dark+minimal+techno).
-You want that to show up before anything else no matter how
-badly we recommend you don't add a song to it because you know better
-what you want than we do. I know how you feel, so you can add `3LittleBears{}`
+You want that to show up before anything else because you know what you want better than we do. We know how you feel, so you can add `3LittleBears{}`
 to any of your Spotify playlist descriptions and include any sub-genres you want
 and we'll treat any match to those playlists as better than a match to one without.
 
@@ -68,6 +65,12 @@ only songs made between March and August of any given year, I don't know your li
 then you're going to want to remove it from the recommendation system. putting
 `3LittleBearsIgnore` anywhere in the description of a playlist will stop it from
 being loaded on the site, and we promise to never talk about it behind it's back.
+
+### A Notation About Notations
+
+If you're the kind of person with a lot of playlists you might find that the app takes an unbearable long time to load. You can speed this up significantly by using the notations described above. Simply add Ignore Notations and Genre Notations to as many playlists as you can and it will significantly reduce the amount of work the app has to do to get everything ready for you.
+
+Anecdotally, during development I was able to reduce my load times from around 2 minutes, to just under 20 seconds by using a combination of notations, so this really can work wonders for you!
 
 ## So What Are You Doing With All My Data?
 

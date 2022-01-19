@@ -7,7 +7,9 @@ export default function (error) {
 	if (error.name === 'refresh400' || error.name === 'expiredToken') {
 		Account.logout();
 
-		get(Toast).push('Something went wrong, plese try logging in again.');
+		get(Toast).push(
+			'Something went wrong, plese try logging in again. This may be showing up because you logged out while the app was loading.'
+		);
 
 		return;
 	}
