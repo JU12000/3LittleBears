@@ -3,5 +3,11 @@
 	"editor.codeActionsOnSave": ["source.formatDocument", "source.fixAll.eslint"],
 	"[svelte]": {
 		"editor.defaultFormatter": "svelte.svelte-vscode"
+	},
+	"[sql]": {
+		"editor.defaultFormatter": "ms-mssql.mssql"
+	},
+	"[dockerfile]": {
+		"editor.defaultFormatter": "ms-azuretools.vscode-docker"
 	}
 }
