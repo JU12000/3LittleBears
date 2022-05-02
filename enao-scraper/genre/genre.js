@@ -1,3 +1,5 @@
+console.time('genre function time');
+
 require('dotenv').config();
 
 const { Firestore } = require('@google-cloud/firestore');
@@ -97,6 +99,26 @@ async function scrape() {
 		}
 	});
 
-	console.log(genres);
+	await firestore
+		.doc('genre/index')
+		.set({
+			count: genres.length,
+			genres: genres,
+			lastUpdated: new Date().toUTCString()
+		})
+		.then((writeResult) => {
+			console.log(`Document written at ${writeResult.writeTime.toDate()}`);
+		});
+
+	await firestore.terminate().then(() => {
+		console.log('Connection to Firestore terminated. Scraping complete');
+	});
+
+	console.timeEnd('genre function time');
+	console.log(
+		'genre function memory used: ' +
+			Math.round(process.memoryUsage().heapUsed / 1048576) +
+			'MB'
+	);
 }
 scrape();

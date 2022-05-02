@@ -1,0 +1,9 @@
+{
+	"name": "enao-scraper-genre",
+	"version": "1.0.0",
+	"dependencies": {
+		"@google-cloud/firestore": "^5.0.2",
+		"apify": "^2.3.0",
+		"dotenv": "^16.0.0"
+	}
+}
