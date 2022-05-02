@@ -16,7 +16,7 @@ if (process.env.NODE_ENV === 'development') {
 	});
 }
 
-async function scrape() {
+exports.scrape = async function scrape() {
 	// The request list and purpose of each request is as follows:
 	// 1. All genres by popularity - used to establish and verify the working list
 	//		of genres, sorting by popularity means we don't have to do an additional
@@ -120,5 +120,6 @@ async function scrape() {
 			Math.round(process.memoryUsage().heapUsed / 1048576) +
 			'MB'
 	);
-}
-scrape();
+
+	return 1;
+};
