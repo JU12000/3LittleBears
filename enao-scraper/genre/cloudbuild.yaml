@@ -1,7 +1,4 @@
 steps:
   - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
-    args:
-      - gcloud
-      - functions
-      - deploy
-      - enao-scraper-genre
+    args: ['gcloud', 'functions', 'deploy', 'enao-scraper-genre']
+    dir: './enao-scraper/genre/'
