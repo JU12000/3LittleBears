@@ -5,4 +5,3 @@ steps:
       - functions
       - deploy
       - enao-scraper-genre
-      - --source=.
