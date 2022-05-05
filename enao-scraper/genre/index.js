@@ -1,5 +1,3 @@
-console.time('genre function time');
-
 require('dotenv').config();
 
 const { Firestore } = require('@google-cloud/firestore');
@@ -17,6 +15,8 @@ if (process.env.NODE_ENV === 'development') {
 }
 
 exports.scrape = async function scrape() {
+	console.time('genre function time');
+
 	// The request list and purpose of each request is as follows:
 	// 1. All genres by popularity - used to establish and verify the working list
 	//		of genres, sorting by popularity means we don't have to do an additional
